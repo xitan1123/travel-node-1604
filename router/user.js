@@ -12,7 +12,7 @@ var router = express.Router()
 
 router.route('/check')
   .get(function (req, res) {
-    return {message: 'OK', counter: 1}
+    res.send({message: 'OK', counter: 1})
   });
 
 module.exports = router
