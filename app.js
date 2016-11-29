@@ -95,4 +95,7 @@ app.get('/test', function (req, res) {
   res.send({message: 'OK'});
 });
 
+var user = require('./router/user');
+app.use('/user', user);
+
 app.listen(8000);
