@@ -1,11 +1,19 @@
 var express = require('express');
 var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
 var mysql = require('./util/mysql.js');
 
 var app = express();
 
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(cookieParser());
+
+var user = require('./router/user');
+app.use('/user', user);
+
+var wad = require('./router/wad');
+app.use('/wad', wad);
 
 app.post('/register', function (req, res) {
   mysql.pool.getConnection(function (error, connection) {
@@ -94,8 +102,5 @@ app.get('/', function (req, res) {
 app.get('/test', function (req, res) {
   res.send({message: 'OK'});
 });
-
-var user = require('./router/user');
-app.use('/user', user);
 
 app.listen(8000);

@@ -12,6 +12,8 @@ var router = express.Router()
 
 router.route('/check')
   .get(function (req, res) {
+    console.log('Cookies: ', req.cookies)
+    console.log('Cookies: ', req.signedCookies)
     res.send({message: 'OK', counter: 1})
   })
 
