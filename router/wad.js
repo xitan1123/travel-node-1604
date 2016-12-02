@@ -5,8 +5,8 @@ var router = express.Router()
 
 router.route('/popular/:counter')
   .get(function (req, res) {
-    mysql.pool.getConnection(function (error, connection) {
-      if (error) {
+    mysql.pool.getConnection(function (err, connection) {
+      if (err) {
         res.send({message: 'ERROR_ON_CONNECT_TO_DATABASE'})
       }
       let sql = 'select wad.id, wad.name, wad.alias, wad.taste, wad.area, wad.propose, wad.pic_1, '
