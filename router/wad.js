@@ -3,6 +3,35 @@ var mysql = require('../util/mysql')
 
 var router = express.Router()
 
+router.route('/popular/:counter')
+  .get(function (req, res) {
+    mysql.pool.getConnection(function (error, connection) {
+      if (error) {
+        res.send({message: 'ERROR_ON_CONNECT_TO_DATABASE'})
+      }
+      let sql = 'select wad.id, wad.name, wad.alias, wad.taste, wad.area, wad.propose, wad.pic_1, '
+          + 'count(*) counter '
+          + 'from user_log l '
+          + 'join wine_and_dine wad on wad.id = l.item_id '
+          + 'where l.category = ? '
+          + 'group by wad.id '
+          + 'order by counter desc '
+          + 'limit ?'
+      let param = ['wad', parseInt(req.params.counter)]
+      connection.query({
+        sql: sql,
+        values: param
+      }, function (err, data) {
+        connection.release()
+        if (err) {
+          console.log(err)
+          res.send({message: 'ERROR', error: 'QUERY_FAILED'})
+        }
+        res.json(data)
+      })
+    })
+  })
+
 router.route('/recommand/:counter')
   .get(function (req, res) {
     mysql.pool.getConnection(function (error, connection) {

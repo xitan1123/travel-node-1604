@@ -1,7 +1,5 @@
 var express = require('express')
 var router = express.Router()
-var bodyParser = require('body-parser');
-var cookieParser = require('cookie-parser');
 var mysql = require('../util/mysql.js');
 
 // var multer = require('multer');
@@ -15,8 +13,7 @@ var mysql = require('../util/mysql.js');
 
 router.route('/check')
   .get(function (req, res) {
-    console.log('Cookies: ', req.cookies)
-    console.log('Cookies: ', req.signedCookies)
+    console.log('Cookies: ', req.cookies.user)
     res.send({message: 'OK', counter: 1})
   })
 
