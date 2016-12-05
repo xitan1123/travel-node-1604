@@ -1,6 +1,6 @@
 var express = require('express')
 var router = express.Router()
-var mysql = require('../util/mysql.js');
+var mysql = require('../util/mysql');
 
 // var multer = require('multer');
 
@@ -10,6 +10,33 @@ var mysql = require('../util/mysql.js');
 //   console.log('[info] Time:', Date.now());
 //   next();
 // });
+
+router.route('/info')
+  .get(function (req, res) {
+    mysql.pool.getConnection(function (err, connection) {
+      if (err) {
+        // console.log(err)
+        res.send({message: 'ERROR_ON_CONNECT_TO_DATABASE'})
+        return
+      }
+      let sql = 'select id, account, nickname '
+          + 'from users '
+          + 'where id = ? '
+          + 'limit 1'
+      let param = [req.cookies.user]
+      connection.query({
+        sql: sql,
+        values: param
+      }, function (err, data) {
+        connection.release()
+        if (err) {
+          res.send({message: 'QUERY_FAILED'})
+          return
+        }
+        res.json(data[0])
+      })
+    })
+  })
 
 router.route('/check')
   .get(function (req, res) {
