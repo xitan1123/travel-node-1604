@@ -3,6 +3,37 @@ var mysql = require('../util/mysql')
 
 var router = express.Router()
 
+router.route('/random')
+  .get(function (req, res) {
+    mysql.pool.getConnection(function (err, connection) {
+      if (err) {
+        console.log(err)
+        res.send({message: 'ERROR_ON_CONNECT_TO_DATABASE'})
+        return
+      }
+      let sql = 'select id, name, alias, taste, area, propose, pic_1 '
+          + 'from wine_and_dine wad '
+          + 'join ('
+          + 'select round('
+          + 'rand() * ('
+          + 'select max(id) from wine_and_dine'
+          + ')'
+          + ') id_t'
+          + ') wad_t '
+          + 'where wad.id >= wad_t.id_t '
+          + 'limit 1'
+      connection.query({sql: sql}, function (err, data) {
+        connection.release()
+        if (err) {
+          console.log(err)
+          res.send({message: 'QUERY_FAILED'})
+          return
+        }
+        res.send(data[0])
+      })
+    })
+  })
+
 router.route('/:id')
   .get(function (req, res) {
     mysql.pool.getConnection(function (err, connection) {
