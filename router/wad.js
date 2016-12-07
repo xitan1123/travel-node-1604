@@ -3,6 +3,42 @@ var mysql = require('../util/mysql')
 
 var router = express.Router()
 
+router.route('/search')
+  .post(function (req, res) {
+    mysql.pool.getConnection(function (err, connection) {
+      if (err) {
+        console.log(err)
+        res.send({message: 'ERROR_ON_CONNECT_TO_DATABASE'})
+        return
+      }
+      let sql = 'select id, name, alias, taste, area, propose, pic_1, history '
+          + 'from wine_and_dine '
+          + 'where locate(?, name) > 0 '
+          + 'or locate(?, alias) > 0 '
+          + 'or locate(?, taste) > 0 '
+          + 'or locate(?, area) > 0 '
+          + 'or locate(?, propose) > 0 '
+          + 'or locate(?, history) > 0 '
+      let param = [
+        req.body['search'],
+        req.body['search'],
+        req.body['search'],
+        req.body['search'],
+        req.body['search'],
+        req.body['search']
+      ]
+      connection.query({sql: sql, values: param}, function (err, data) {
+        connection.release()
+        if (err) {
+          console.log(err)
+          res.send({message: 'QUERY_FAILED'})
+          return
+        }
+        res.send(data)
+      })
+    })
+  })
+
 router.route('/random')
   .get(function (req, res) {
     mysql.pool.getConnection(function (err, connection) {
