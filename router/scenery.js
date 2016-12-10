@@ -3,6 +3,44 @@ var mysql = require('../util/mysql')
 
 var router = express.Router()
 
+// 热门景点
+router.route('/popular/:counter')
+  .get(function (request, response) {
+    mysql.pool.getConnection(function (error, connection) {
+      if (error) {
+        console.error(error)
+        response.send({message: 'ERROR_ON_CONNECT_TO_DATABASE'})
+        return
+      }
+      let sql = `
+      select s.id, s.season, s.name, s.location, s.intro
+        , c.v as category, r.v as region
+        , count(*) counter
+      from user_log as l, scenery as s
+        , (select k, v from kv where c = '景点类别') as c
+        , (select k, v from kv where c = '景点地区') as r
+      where s.id = l.item_id
+        and l.category = 'scenery'
+        and s.category_id = c.k
+        and s.region_id = r.k
+      group by s.id
+      order by counter desc
+      limit ?
+      `
+      let param = [parseInt(request.params.counter)]
+      connection.query({sql: sql, values: param}, function (error, data) {
+        connection.release()
+        if (error) {
+          console.error(error)
+          response.send({message: 'QUERY_FAILED'})
+          return
+        }
+        response.send(data)
+      })
+    })
+  })
+
+// 随机景点
 router.route('/random')
   .get(function (request, response) {
     mysql.pool.getConnection(function (error, connection) {
