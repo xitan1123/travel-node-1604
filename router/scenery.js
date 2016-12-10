@@ -3,6 +3,37 @@ var mysql = require('../util/mysql')
 
 var router = express.Router()
 
+router.route('/random')
+  .get(function (request, response) {
+    mysql.pool.getConnection(function (error, connection) {
+      if (error) {
+        console.error(error)
+        response.send({message: 'ERROR_ON_CONNECT_TO_DATABASE'})
+        return
+      }
+      let sql = `
+      select s.id, c.v as category, r.v as region, season, name, location, intro
+      from scenery as s
+        join (select round(rand() * (select max(id) from scenery)) as id_t) as scenery_t,
+        (select k, v from kv where c = '景点类别') as c,
+        (select k, v from kv where c = '景点地区') as r
+      where s.id >= scenery_t.id_t
+        and s.category_id = c.k
+        and s.region_id = r.k
+      limit 1
+      `
+      connection.query({sql: sql, values: []}, function (error, data) {
+        connection.release()
+        if (error) {
+          console.error(error)
+          response.send({message: 'QUERY_FAILED'})
+          return
+        }
+        response.send(data[0])
+      })
+    })
+  })
+
 // 指定id的单个景点数据
 router.route('/:id')
   .get(function (request, response) {
