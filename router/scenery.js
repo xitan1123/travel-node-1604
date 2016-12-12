@@ -3,6 +3,36 @@ var mysql = require('../util/mysql')
 
 var router = express.Router()
 
+// 相关吃喝
+router.route('/wad/:id/:counter')
+  .get(function (request, response) {
+    mysql.pool.getConnection(function (error, connection) {
+      if (error) {
+        console.error(error)
+        response.send({message: 'ERROR_ON_CONNECT_TO_DATABASE'})
+        return
+      }
+      let sql = `
+      select id, name, alias, taste, area, history, propose, intro, pic_1, pic_2
+      from wine_and_dine as wad
+        , (select location from scenery where id = ?) as s
+      where locate(s.location, wad.area) > 0
+      limit ?
+      `
+      let param = [parseInt(request.params.id), parseInt(request.params.counter)]
+      connection.query({sql: sql, values: param}, function (error, data) {
+        connection.release()
+        if (error) {
+          console.error(error)
+          response.send({message: 'QUERY_FAILED'})
+          return
+        }
+        response.send(data)
+      })
+    })
+  })
+
+// 季节
 router.route('/season/:id')
   .get(function (req, res) {
     mysql.pool.getConnection(function (error, connection) {
