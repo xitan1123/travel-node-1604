@@ -3,6 +3,52 @@ var mysql = require('../util/mysql')
 
 var router = express.Router()
 
+router.route('/season/:id')
+  .get(function (req, res) {
+    mysql.pool.getConnection(function (error, connection) {
+      if (error) {
+        console.error(error)
+        res.send({message: 'ERROR_ON_CONNECT_TO_DATABASE'})
+        return
+      }
+      let sql = `
+      select id, c.v as category, r.v as region, season, name, location, intro
+      from scenery as s, (
+        select k, v from kv where c = "景点类别"
+      ) as c, (
+        select k, v from kv where c = "景点地区"
+      ) as r
+      where c.k = s.category_id
+        and r.k = s.region_id
+        and locate(?, s.season) > 0
+      `
+      let season = ''
+      if (req.params.id == 1) {
+        season = '春'
+      } else if (req.params.id == 2) {
+        season = '夏'
+      } else if (req.params.id == 3) {
+        season = '秋'
+      } else if (req.params.id == 4) {
+        season = '冬'
+      } else {
+        console.log('未指定季节')
+        res.send({message: 'NO_SUCH_SEASON'})
+        return
+      }
+      let param = [season]
+      connection.query({sql: sql, values: param}, function (error, data) {
+        connection.release()
+        if (error) {
+          console.error(error)
+          res.send({message: 'QUERY_FAILED'})
+          return
+        }
+        res.send(data)
+      })
+    })
+  })
+
 // 热门景点
 router.route('/popular/:counter')
   .get(function (request, response) {
