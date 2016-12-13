@@ -70,7 +70,7 @@ router.route('/season/:id')
         return
       }
       let sql = `
-      select id, c.v as category, r.v as region, season, name, location, intro
+      select id, c.v as category, r.v as region, season, name, location, intro, pic_1, pic_2
       from scenery as s, (
         select k, v from kv where c = "景点类别"
       ) as c, (
@@ -117,7 +117,7 @@ router.route('/popular/:counter')
         return
       }
       let sql = `
-      select s.id, s.season, s.name, s.location, s.intro
+      select s.id, s.season, s.name, s.location, s.intro, s.pic_1, s.pic_2
         , c.v as category, r.v as region
         , count(*) counter
       from user_log as l, scenery as s
@@ -154,7 +154,7 @@ router.route('/random')
         return
       }
       let sql = `
-      select s.id, c.v as category, r.v as region, season, name, location, intro
+      select s.id, c.v as category, r.v as region, season, name, location, intro, pic_1, pic_2
       from scenery as s
         join (select round(rand() * (select max(id) from scenery)) as id_t) as scenery_t,
         (select k, v from kv where c = '景点类别') as c,
@@ -185,7 +185,7 @@ router.route('/:id')
         return
       }
       let sql = `
-      select id, c.v as category, r.v as region, season, name, location, intro
+      select id, c.v as category, r.v as region, season, name, location, intro, pic_1, pic_2
       from scenery as s, (
         select k, v from kv where c = '景点类别'
       ) as c, (
@@ -218,7 +218,7 @@ router.route('/region/:id')
         return
       }
       let sql = `
-      select id, c.v as category, r.v as region, season, name, location, intro
+      select id, c.v as category, r.v as region, season, name, location, intro, pic_1, pic_2
       from scenery as s, (
         select k, v from kv where c = "景点类别"
       ) as c, (
@@ -249,14 +249,14 @@ router.route('/category/:id')
         res.send({message: 'ERROR_ON_CONNECT_TO_DATABASE'})
         return
       }
-      let sql = 'select id, c.v as category, r.v as region, season, name, location, intro '
-          + 'from scenery s, ('
-          + 'select k, v from kv where c = "景点类别" and k = ?'
-          + ') as c, ('
-          + 'select k, v from kv where c = "景点地区"'
-          + ') as r '
-          + 'where r.k = s.region_id '
-          + 'and c.k = s.category_id'
+      let sql = `
+      select id, c.v as category, r.v as region, season, name, location, intro, pic_1, pic_2
+      from scenery s
+        , (select k, v from kv where c = "景点类别" and k = ?) as c
+        , (select k, v from kv where c = "景点地区") as r
+      where r.k = s.region_id
+        and c.k = s.category_id
+      `
       let param = [parseInt(req.params.id)]
       connection.query({sql: sql, values: param}, function (error, data) {
         connection.release()
