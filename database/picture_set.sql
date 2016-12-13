@@ -16,20 +16,20 @@ CREATE DATABASE /*!32312 IF NOT EXISTS*/`travel` /*!40100 DEFAULT CHARACTER SET 
 
 USE `travel`;
 
-/*Table structure for table `scenery` */
+/*Table structure for table `picture_set` */
 
-DROP TABLE IF EXISTS `scenery`;
+DROP TABLE IF EXISTS `picture_set`;
 
-CREATE TABLE `scenery` (
+CREATE TABLE `picture_set` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `category_id` int(10) unsigned NOT NULL COMMENT '类别',
-  `region_id` int(10) unsigned NOT NULL COMMENT '地区',
-  `season` varchar(20) NOT NULL COMMENT '季节',
-  `name` varchar(50) NOT NULL COMMENT '名称',
-  `location` varchar(50) DEFAULT NULL COMMENT '位置',
-  `intro` varchar(1000) DEFAULT NULL COMMENT '简介',
+  `item_id` int(10) unsigned NOT NULL,
+  `category` varchar(20) NOT NULL,
+  `url` varchar(100) NOT NULL,
+  `intro` varchar(100) DEFAULT NULL,
+  `date` date DEFAULT NULL,
+  `time` time DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
