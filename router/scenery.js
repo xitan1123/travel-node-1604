@@ -3,6 +3,34 @@ var mysql = require('../util/mysql')
 
 var router = express.Router()
 
+// 图集
+router.route('/:id/picset')
+  .get(function (request, response) {
+    mysql.pool.getConnection(function (error, connection) {
+      if (error) {
+        console.error(error)
+        response.send({message: 'ERROR_ON_CONNECT_TO_DATABASE'})
+        return
+      }
+      let sql = `
+      select id, item_id, category, url, intro, date, time
+      from picture_set
+      where item_id = ?
+        and category = 'scenery'
+      `
+      let param = [parseInt(request.params.id)]
+      connection.query({sql: sql, values: param}, function (error, data) {
+        connection.release()
+        if (error) {
+          console.error(error)
+          response.send({message: 'ERROR_ON_QUERY'})
+          return
+        }
+        response.send(data)
+      })
+    })
+  })
+
 // 相关吃喝
 router.route('/wad/:id/:counter')
   .get(function (request, response) {

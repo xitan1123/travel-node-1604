@@ -16,23 +16,20 @@ CREATE DATABASE /*!32312 IF NOT EXISTS*/`travel` /*!40100 DEFAULT CHARACTER SET 
 
 USE `travel`;
 
-/*Table structure for table `wine_and_dine` */
+/*Table structure for table `scenery` */
 
-DROP TABLE IF EXISTS `wine_and_dine`;
+DROP TABLE IF EXISTS `scenery`;
 
-CREATE TABLE `wine_and_dine` (
+CREATE TABLE `scenery` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) NOT NULL,
-  `alias` varchar(50) DEFAULT NULL,
-  `taste` varchar(20) DEFAULT NULL,
-  `area` varchar(50) DEFAULT NULL,
-  `history` varchar(500) DEFAULT NULL,
-  `propose` varchar(50) DEFAULT NULL,
-  `intro` varchar(1000) DEFAULT NULL,
-  `pic_1` varchar(50) DEFAULT NULL,
-  `pic_2` varchar(500) DEFAULT NULL,
+  `category_id` int(10) unsigned NOT NULL COMMENT '类别',
+  `region_id` int(10) unsigned NOT NULL COMMENT '地区',
+  `season` varchar(20) NOT NULL COMMENT '季节',
+  `name` varchar(50) NOT NULL COMMENT '名称',
+  `location` varchar(50) DEFAULT NULL COMMENT '位置',
+  `intro` varchar(1000) DEFAULT NULL COMMENT '简介',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
