@@ -208,7 +208,7 @@ router.route('/:id')
     })
   })
 
-// 指定类别的所有景点
+// 指定地区的所有景点
 router.route('/region/:id')
   .get(function (request, response) {
     mysql.pool.getConnection(function (error, connection) {
