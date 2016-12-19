@@ -21,6 +21,9 @@ app.use('/log', userLog)
 var scenery = require('./router/scenery')
 app.use('/scenery', scenery)
 
+var test = require('./router/test')
+app.use('/test', test)
+
 app.post('/register', function (req, res) {
   mysql.pool.getConnection(function (error, connection) {
     if (error) {
