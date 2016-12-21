@@ -107,7 +107,7 @@ router.route('/:id/picset')
         return
       }
       let sql = `
-      select id, item_id, category, url, intro, date, time
+      select id, item_id, category, url, name, intro, date, time
       from picture_set
       where item_id = ?
         and category = 'scenery'
