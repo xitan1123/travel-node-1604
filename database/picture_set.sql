@@ -25,6 +25,7 @@ CREATE TABLE `picture_set` (
   `item_id` int(10) unsigned NOT NULL,
   `category` varchar(20) NOT NULL,
   `url` varchar(100) NOT NULL,
+  `name` varchar(20) DEFAULT NULL,
   `intro` varchar(100) DEFAULT NULL,
   `date` date DEFAULT NULL,
   `time` time DEFAULT NULL,
